@@ -25,7 +25,7 @@ main {
 	position: absolute;
 	top: 0;
 	bottom: 0;
-	
+
 	margin-top: 63px;
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
@@ -106,7 +106,7 @@ main {
     color: rgb(146, 168, 209);
 }
 label {
-    color: gray;
+    color: red;
 }
 td {
     padding: 2px;
