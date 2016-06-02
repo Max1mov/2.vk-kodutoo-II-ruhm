@@ -82,7 +82,7 @@
            //tekitan loendi htmli
            this.jars.forEach(function(jar){
 
-               var new_jar = new Jar(jar.id, jar.title, jar.ingredients);
+               var new_jar = new Jar(jar.id, jar.title, jar.ingredients, jar.test);
 
                var li = new_jar.createHtmlElement();
                document.querySelector('.list-of-jars').appendChild(li);
@@ -104,7 +104,7 @@
 					//teen purgid htmli
 					Moosipurk.instance.jars.forEach(function(jar){
 
-					   var new_jar = new Jar(jar.id, jar.title, jar.ingredients);
+					   var new_jar = new Jar(jar.id, jar.title, jar.ingredients, jar.test);
 
 					   var li = new_jar.createHtmlElement();
 					   document.querySelector('.list-of-jars').appendChild(li);
@@ -218,11 +218,12 @@
 
        var title = document.querySelector('.title').value;
        var ingredients = document.querySelector('.ingredients').value;
+       var test = document.querySelector('.test').value;
 
        //console.log(title + ' ' + ingredients);
        //1) tekitan uue Jar'i
 	   var id = guid();
-       var new_jar = new Jar(id, title, ingredients);
+       var new_jar = new Jar(id, title, ingredients, test);
 
        //lisan massiiivi purgi
        this.jars.push(new_jar);
@@ -246,7 +247,7 @@
 		};
 
 		//teeb päringu
-		xhttp.open("GET", "save.php?id="+id+"&title="+title+"&ingredients="+ingredients, true);
+		xhttp.open("GET", "save.php?id="+id+"&title="+title+"&ingredients="+ingredients"&test="+test, true);
 		xhttp.send();
 
 
@@ -292,10 +293,11 @@
 
    }; // MOOSIPURGI LÕPP
 
-   var Jar = function(new_id, new_title, new_ingredients){
+   var Jar = function(new_id, new_title, new_ingredients, new_test){
 	 this.id = new_id;
      this.title = new_title;
      this.ingredients = new_ingredients;
+     this.test = new_test;
      console.log('created new jar');
    };
 
@@ -324,7 +326,7 @@
        var span_with_content = document.createElement('span');
        span_with_content.className = 'content';
 
-       var content = document.createTextNode(this.title + ' | ' + this.ingredients);
+       var content = document.createTextNode(this.title + ' | ' + this.ingredients + ' | ' + this.test);
        span_with_content.appendChild(content);
 
        li.appendChild(span_with_content);
