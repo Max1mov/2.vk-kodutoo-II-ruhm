@@ -200,29 +200,7 @@
        var PrioriteetName = document.querySelector('.ingredients').value;
       var timeAdded = this.writeDate();
 
-       //console.log(title + ' ' + ingredients);
-       //1) tekitan uue Jar'i
-	      var id = guid();
-       var new_tege = new Tege(id, title, priori, time);
-
-       //lisan massiiivi purgi
-       this.tege.push(new_tege);
-       console.log(JSON.stringify(this.tege));
-       // JSON'i stringina salvestan localStorage'isse
-       localStorage.setItem('tege', JSON.stringify(this.tege));
-
-
-		//AJAX
-		var xhttp = new XMLHttpRequest();
-
-		//mis juhtub kui päring lõppeb
-		xhttp.onreadystatechange = function() {
-
-			console.log(xhttp.readyState);
-
-			if (xhttp.readyState == 4 && xhttp.status == 200) {
-
-				console.log(xhttp.responseText);
+    
 			}
 		};
 
