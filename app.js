@@ -127,19 +127,7 @@
         location.reload();
        });
      },
-	 deleteJar: function(event){
-
-		// millele vajutasin SPAN
-		console.log(event.target);
-
-		// tema parent ehk mille sees ta on LI
-		console.log(event.target.parentNode);
-
-		//mille sees see on UL
-		console.log(event.target.parentNode.parentNode);
-
-		//id
-		console.log(event.target.dataset.id);
+	 delete: function(event){
 
 		var c = confirm("Oled kindel?");
 
@@ -159,17 +147,17 @@
 
 		var delete_id = event.target.dataset.id;
 
-		for(var i = 0; i < this.jars.length; i++){
+		for(var i = 0; i < this.tege.length; i++){
 
-			if(this.jars[i].id == delete_id){
+			if(this.tege[i].id == delete_id){
 				//see on see
 				//kustuta kohal i objekt ära
-				this.jars.splice(i, 1);
+				this.tege.splice(i, 1);
 				break;
 			}
 		}
 
-		localStorage.setItem('jars', JSON.stringify(this.jars));
+		localStorage.setItem('tege', JSON.stringify(this.tege));
 
 
 
@@ -199,7 +187,8 @@
                  li.style.display = 'none';
 
              }
-
+             if(li.style.display == 'list-item'){kokku++;}
+             document.querySelector('#kokku').innerHTML='Kokku: '+kokku;
          }
      },
 
@@ -207,20 +196,20 @@
        //salvestame purgi
        //console.log(event);
 
-       var title = document.querySelector('.title').value;
-       var ingredients = document.querySelector('.ingredients').value;
-       var test = document.querySelector('.test').value;
+       var TegevusName = document.querySelector('.title').value;
+       var PrioriteetName = document.querySelector('.ingredients').value;
+      var timeAdded = this.writeDate();
 
        //console.log(title + ' ' + ingredients);
        //1) tekitan uue Jar'i
-	   var id = guid();
-       var new_jar = new Jar(id, title, ingredients, test);
+	      var id = guid();
+       var new_tege = new Tege(id, title, priori, time);
 
        //lisan massiiivi purgi
-       this.jars.push(new_jar);
-       console.log(JSON.stringify(this.jars));
+       this.tege.push(new_tege);
+       console.log(JSON.stringify(this.tege));
        // JSON'i stringina salvestan localStorage'isse
-       localStorage.setItem('jars', JSON.stringify(this.jars));
+       localStorage.setItem('tege', JSON.stringify(this.tege));
 
 
 		//AJAX
@@ -244,7 +233,7 @@
 
        // 2) lisan selle htmli listi juurde
        var li = new_jar.createHtmlElement();
-       document.querySelector('.list-of-jars').appendChild(li);
+       document.querySelector('.list-of-tege').appendChild(li);
 
 
      },
@@ -284,12 +273,12 @@
 
    }; // MOOSIPURGI LÕPP
 
-   var Jar = function(new_id, new_title, new_ingredients, new_test){
+   var Jar = function(new_id, new_title, new_priori, new_time){
 	 this.id = new_id;
      this.title = new_title;
-     this.ingredients = new_ingredients;
-     this.test = new_test;
-     console.log('created new jar');
+     this.priori = new_priori;
+     this.time = new_time;
+     console.log('created new tege');
    };
 
    Jar.prototype = {
@@ -317,7 +306,7 @@
        var span_with_content = document.createElement('span');
        span_with_content.className = 'content';
 
-       var content = document.createTextNode(this.title + ' | ' + this.ingredients + ' | ' + this.test);
+       var content = document.createTextNode(this.title + ' | ' + this.priori + ' | ' + this.time);
        span_with_content.appendChild(content);
 
        li.appendChild(span_with_content);
@@ -335,7 +324,7 @@
 	   li.appendChild(span_delete);
 
 	   //keegi vajutas nuppu
-	   span_delete.addEventListener("click", Moosipurk.instance.deleteJar.bind(Moosipurk.instance));
+	   span_delete.addEventListener("click", Tegevus.instance.deleteJar.bind(Moosipurk.instance));
 
        return li;
 
