@@ -1,35 +1,32 @@
 (function(){
    "use strict";
 
-   var Moosipurk = function(){
+   var Tegevus = function(){
 
      // SEE ON SINGLETON PATTERN
-     if(Moosipurk.instance){
-       return Moosipurk.instance;
+     if(Tegevus.instance){
+       return Tegevus.instance;
      }
-     //this viitab Moosipurk fn
-     Moosipurk.instance = this;
+     //this viitab Tegevus fn
+     Tegevus.instance = this;
 
-     this.routes = Moosipurk.routes;
+     this.routes = Tegevus.routes;
      // this.routes['home-view'].render()
 
-     console.log('moosipurgi sees');
+     console.log('Tegevus sees');
 
      // KÕIK muuutujad, mida muudetakse ja on rakendusega seotud defineeritakse siin
-     this.click_count = 0;
+     this.tege = [];
      this.currentRoute = null;
      console.log(this);
-
-     // hakkan hoidma kõiki purke
-     this.jars = [];
 
      // Kui tahan Moosipurgile referenci siis kasutan THIS = MOOSIPURGI RAKENDUS ISE
      this.init();
    };
 
-   window.Moosipurk = Moosipurk; // Paneme muuutja külge
+   //window.Moosipurk = Moosipurk; // Paneme muuutja külge
 
-   Moosipurk.routes = {
+   Tegevus.routes = {
      'home-view': {
        'render': function(){
          // käivitame siis kui lehte laeme
@@ -39,7 +36,7 @@
      'list-view': {
        'render': function(){
          // käivitame siis kui lehte laeme
-         console.log('>>>>loend');
+         //console.log('>>>>loend');
 
          //simulatsioon laeb kaua
          window.setTimeout(function(){
@@ -56,7 +53,7 @@
    };
 
    // Kõik funktsioonid lähevad Moosipurgi külge
-   Moosipurk.prototype = {
+   Tegevus.prototype = {
 
      init: function(){
        console.log('Rakendus läks tööle');
@@ -74,54 +71,22 @@
        }
 
        //saan kätte purgid localStorage kui on
-       if(localStorage.jars){
+       if(localStorage.tege){
            //võtan stringi ja teen tagasi objektideks
-           this.jars = JSON.parse(localStorage.jars);
+           this.tege = JSON.parse(localStorage.tege);
            console.log('laadisin localStorageist massiiivi ' + this.jars.length);
 
            //tekitan loendi htmli
-           this.jars.forEach(function(jar){
+           this.tege.forEach(function(jar){
 
-               var new_jar = new Jar(jar.id, jar.title, jar.ingredients, jar.test);
+               var new_tege = new Tege(tege.id, tege.Nimetus, tege.Prioriteet, tege.timeAdded);
 
-               var li = new_jar.createHtmlElement();
-               document.querySelector('.list-of-jars').appendChild(li);
+               var li = new_tege.createHtmlElement();
+               document.querySelector('.list-of-tege').appendChild(li);
 
            });
 
-       }else{
-
-		   //küsin AJAXIGA
-			var xhttp = new XMLHttpRequest();
-			xhttp.onreadystatechange = function() {
-				if (xhttp.readyState == 4 && xhttp.status == 200) {
-
-					console.log(xhttp.responseText);
-					//tekst -> objekktideks
-					Moosipurk.instance.jars = JSON.parse(xhttp.responseText);
-					console.log(Moosipurk.instance.jars);
-
-					//teen purgid htmli
-					Moosipurk.instance.jars.forEach(function(jar){
-
-					   var new_jar = new Jar(jar.id, jar.title, jar.ingredients, jar.test);
-
-					   var li = new_jar.createHtmlElement();
-					   document.querySelector('.list-of-jars').appendChild(li);
-
-				   });
-
-				   //salvestan localStoragisse
-				   localStorage.setItem('jars', JSON.stringify(Moosipurk.instance.jars));
-
-
-				}
-			};
-			xhttp.open("GET", "save.php", true);
-			xhttp.send();
-
-
-	   }
+       }
 
 
        // esimene loogika oleks see, et kuulame hiireklikki nupul
@@ -130,11 +95,37 @@
      },
 
      bindEvents: function(){
-       document.querySelector('.add-new-jar').addEventListener('click', this.addNewClick.bind(this));
+       document.querySelector('.add-new-tege').addEventListener('click', this.addNewClick.bind(this));
 
        //kuulan trükkimist otsikastis
        document.querySelector('#search').addEventListener('keyup', this.search.bind(this));
 
+     },
+     edit: function(event){
+       var selected_id = event.target.dataset.id;
+       var klops = event.target.parentNode;
+        $("#ModalEdit").modal({backdrop: true});
+
+            $(document).on("click", "#edit_close", function(event){
+         return;
+       });
+
+        $(document).on("click", "#save", function(event){
+            console.log(klops);
+          var TegevusName = document.querySelector('.EditTegevusName').value;
+          var PrioriteetName = document.querySelector('.EditPrioriteetName').value;
+  this.tege = JSON.parse(localStorage.tege);
+        klops.parentNode.removeChild(klops);
+        for(var i=0; i<this.tege.length; i++){
+          if(this.tege[i].id == selected_id){
+            this.tege[i].TegevusName = TegevusName;
+            this.tege[i].PrioriteetName = PrioriteetName;
+            break;
+          }
+        }
+        localStorage.setItem('tege', JSON.stringify(this.tege));
+        location.reload();
+       });
      },
 	 deleteJar: function(event){
 
