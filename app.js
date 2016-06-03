@@ -118,8 +118,8 @@
         klops.parentNode.removeChild(klops);
         for(var i=0; i<this.tege.length; i++){
           if(this.tege[i].id == selected_id){
-            this.tege[i].TegevusName = TegevusName;
-            this.tege[i].PrioriteetName = PrioriteetName;
+            this.tege[i].TegevusName = Nimetus;
+            this.tege[i].PrioriteetName = Prioriteet;
             break;
           }
         }
@@ -196,25 +196,36 @@
        //salvestame purgi
        //console.log(event);
 
-       var TegevusName = document.querySelector('.title').value;
-       var PrioriteetName = document.querySelector('.ingredients').value;
+       var Nimetus = document.querySelector('.Nimetus').value;
+       var Prioriteet = document.querySelector('.Prioriteet').value;
       var timeAdded = this.writeDate();
 
-    
+      //console.log(BookAuthor+' '+BookName+' Lisatud: '+timeAdded);
+      var className = document.getElementById("show-feedback").className;
+      //lisan masiivi purgid
+
+
+      if(Nimetus === '' || Prioriteet === ''){
+          if(className == "feedback-success"){
+              document.querySelector('.feedback-success').className=document.querySelector('.feedback-success').className.replace('feedback-success','feedback-error');
+          }
+          document.querySelector('#show-feedback').innerHTML='Kõik read peavad täidetud olema';
+      }else{
+        if(className == "feedback-error"){
+          document.querySelector('.feedback-error').className=document.querySelector('.feedback-error').className.replace('feedback-error','feedback-success');
+        }
+        document.querySelector('#show-feedback').innerHTML='Salvestamine õnnestus';
+        var new_tege = new Book(guid(), Nimetus, Prioriteet, timeAdded);
+        //lisan massiivi moosipurgi
+        this.tege.push(new_tege);
+        //console.log(JSON.stringify(this.books));
+        //JSON'i stringina salvestan local storagisse
+        localStorage.setItem('tege', JSON.stringify(this.tege));
+        document.querySelector('.list-of-tege').appendChild(new_tege.createHtmlElement());
+
+
 			}
-		};
-
-		//teeb päringu
-		xhttp.open("GET", "save.php?id="+id+"&title="+title+"&ingredients="+ingredients"&test="+test, true);
-		xhttp.send();
-
-
-       // 2) lisan selle htmli listi juurde
-       var li = new_jar.createHtmlElement();
-       document.querySelector('.list-of-tege').appendChild(li);
-
-
-     },
+		},
 
      routeChange: function(event){
 
@@ -234,10 +245,7 @@
        }else{
          /// 404 - ei olnud
        }
-
-
      },
-
      updateMenu: function() {
        //http://stackoverflow.com/questions/195951/change-an-elements-class-with-javascript
        //1) võtan maha aktiivse menüülingi kui on
@@ -246,20 +254,42 @@
        //2) lisan uuele juurde
        //console.log(location.hash);
        document.querySelector('.'+this.currentRoute).className += ' active-menu';
+ 	},
+  writeDate : function(){
+      var d = new Date();
+      var day = d.getDate();
+      var month = d.getMonth();
+      var year = d.getFullYear();
+      //#clock element htmli
+      var curTime = this.addZeroBefore(day)+"."+this.addZeroBefore(month+1)+"."+year;
+      return curTime;
+  },
+  addZeroBefore : function(number){
+      if(number<10){
+      number="0"+number;
+      }
+      return number;
+  },
+    trimWord: function (str) {
+    str = str.replace(/^\s+/, '');
+    for (var i = str.length - 1; i >= 0; i--) {
+        if (/\S/.test(str.charAt(i))) {
+            str = str.substring(0, i + 1);
+            break;
+        }
+    }
+    return str;
+  }
+    };
+  var Tege = function(new_id, new_Nimetus, new_Prioriteet, new_timeAdded){
+  this.id = new_id;
+    this.Nimetus = new_Nimetus;
+    this.Prioriteet = new_Prioriteet;
+    this.timeAdded = new_timeAdded;
+    console.log('created new tege');
+  };
 
-     }
-
-   }; // MOOSIPURGI LÕPP
-
-   var Jar = function(new_id, new_title, new_priori, new_time){
-	 this.id = new_id;
-     this.title = new_title;
-     this.priori = new_priori;
-     this.time = new_time;
-     console.log('created new tege');
-   };
-
-   Jar.prototype = {
+   Tege.prototype = {
      createHtmlElement: function(){
 
        // võttes title ja ingredients ->
@@ -276,7 +306,7 @@
        var span = document.createElement('span');
        span.className = 'letter';
 
-       var letter = document.createTextNode(this.title.charAt(0));
+       var letter = document.createTextNode(this.Nimetus.charAt(0));
        span.appendChild(letter);
 
        li.appendChild(span);
@@ -284,25 +314,24 @@
        var span_with_content = document.createElement('span');
        span_with_content.className = 'content';
 
-       var content = document.createTextNode(this.title + ' | ' + this.priori + ' | ' + this.time);
+       var content = document.createTextNode(this.Nimetus + ' | ' + this.Prioriteet + ' | ' + this.timeAdded);
        span_with_content.appendChild(content);
 
        li.appendChild(span_with_content);
 
 	   //DELETE nupp
-	   var span_delete = document.createElement('span');
-	   span_delete.style.color = "red";
-	   span_delete.style.cursor = "pointer";
+     var delete_span = document.createElement('button');
+     delete_span.setAttribute('data-id', this.id);
+     delete_span.innerHTML = "Kustuta";
+     li.appendChild(delete_span);
+     delete_span.addEventListener('click', Tegevus.instance.delete.bind(Tegevus.instance));
 
-	   //kustutamiseks panen id kaasa
-	   span_delete.setAttribute("data-id", this.id);
+     var edit_span = document.createElement('button');
+     edit_span.setAttribute('data-id', this.id);
+     edit_span.innerHTML = "Muuda";
+     li.appendChild(edit_span);
+     edit_span.addEventListener('click', Tegevus.instance.edit.bind(Tegevus.instance));
 
-	   span_delete.innerHTML = " Delete";
-
-	   li.appendChild(span_delete);
-
-	   //keegi vajutas nuppu
-	   span_delete.addEventListener("click", Tegevus.instance.deleteJar.bind(Moosipurk.instance));
 
        return li;
 
@@ -325,7 +354,7 @@
 
    // kui leht laetud käivitan Moosipurgi rakenduse
    window.onload = function(){
-     var app = new Moosipurk();
+     var app = new Tegevus();
    };
 
 })();
