@@ -70,7 +70,7 @@
            console.log('laadisin localStorageist massiiivi ' + this.teges.length);
 
            //tekitan loendi htmli
-           this.teges.forEach(function(jar){
+           this.teges.forEach(function(teges){
 
                var new_teges = new Tege(teges.id, teges.Nimetus, teges.Prioriteet, teges.timeAdded);
 
@@ -88,7 +88,7 @@
      },
 
      bindEvents: function(){
-       document.querySelector('.add-new-tege').addEventListener('click', this.addNewClick.bind(this));
+       document.querySelector('#show-feedback').addEventListener('click', this.addNewClick.bind(this));
 
        //kuulan trükkimist otsikastis
        document.querySelector('#search').addEventListener('keyup', this.search.bind(this));
@@ -97,7 +97,7 @@
      edit: function(event){
        var selected_id = event.target.dataset.id;
        var clicked_li = event.target.parentNode;
-        $("#ModalEdit").modal({backdrop: true});
+
 
             $(document).on("click", "#edit_close", function(event){
          return;
@@ -161,7 +161,7 @@
              var li = list[i];
 
              // ühe listitemi sisu tekst
-             var stack = li.querySelector('.content').innerHTML.toLowerCase();
+             var stack = li.querySelector('.list-of-teges').innerHTML.toLowerCase();
 
              //kas otsisõna on sisus olemas
              if(stack.indexOf(needle) !== -1){
@@ -207,7 +207,8 @@
         this.teges.push(new_tege);
         //JSON'i stringina salvestan local storagisse
         localStorage.setItem('teges', JSON.stringify(this.teges));
-        document.querySelector('.list-of-teges').appendChild(new_teges.createHtmlElement());
+        console.log(this);
+        document.querySelector('#show-feedback').appendChild(new_tege.createHtmlElement());
 
 
 			}
@@ -289,7 +290,7 @@
        var content = document.createTextNode(this.Nimetus + ' | ' + this.Prioriteet + ' | ' + this.timeAdded);
        span_with_content.appendChild(content);
 
-       li.appendChild(content_span);
+       li.appendChild(content);
 
 	   //DELETE nupp
      var delete_span = document.createElement('button');
