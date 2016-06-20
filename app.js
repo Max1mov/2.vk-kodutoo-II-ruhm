@@ -97,26 +97,26 @@
      edit: function(event){
        var selected_id = event.target.dataset.id;
        var clicked_li = event.target.parentNode;
+       $("#ModalEdit").modal({backdrop: true});
 
-
-            $(document).on("click", "#edit_close", function(event){
+        $(document).on("click", "#edit_close", function(event){
          return;
        });
 
         $(document).on("click", "#save", function(event){
-            console.log(clicked_li);
-          var Nimetus = document.querySelector('.EditNimetus').value;
-          var Prioriteet = document.querySelector('.EditPrioriteet').value;
-          this.teges = JSON.parse(localStorage.teges);
-          clicked_li.parentNode.removeChild(clicked_li);
+        console.log(clicked_li);
+        var BookAuthor = document.querySelector('.EditNimetus').value;
+        var BookName = document.querySelector('.EditPrioriteet').value;
+        this.teges = JSON.parse(localStorage.teges);
+        clicked_li.parentNode.removeChild(clicked_li);
         for(var i=0; i<this.teges.length; i++){
-          if(this.teges[i].id == selected_id){
-            this.teges[i].Nimetus = Nimetus;
-            this.teges[i].Prioriteet = Prioriteet;
+          if(this.books[i].id == selected_id){
+            this.books[i].Nimetus = Nimetus;
+            this.books[i].Prioriteet = Prioriteet;
             break;
           }
         }
-        localStorage.setItem('teges', JSON.stringify(this.teges));
+        localStorage.setItem('books', JSON.stringify(this.books));
         location.reload();
        });
      },
@@ -208,7 +208,7 @@
         //JSON'i stringina salvestan local storagisse
         localStorage.setItem('teges', JSON.stringify(this.teges));
         console.log(this);
-        document.querySelector('#show-feedback').appendChild(new_tege.createHtmlElement());
+        document.querySelector('.list-of-teges').appendChild(new_tege.createHtmlElement());
 
 
 			}
@@ -304,6 +304,8 @@
      edit_span.innerHTML = "Muuda";
      li.appendChild(edit_span);
      edit_span.addEventListener('click', Tegevus.instance.edit.bind(Tegevus.instance));
+
+
 
 
        return li;
